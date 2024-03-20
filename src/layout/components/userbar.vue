@@ -215,7 +215,7 @@ export default {
 }
 
 .user-bar .panel-item:hover {
-  background: rgba(0, 0, 0, 0.1);
+  background: #000;
 }
 
 .user-bar .user-avatar {

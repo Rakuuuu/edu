@@ -130,6 +130,17 @@ const routes = [
           fullpage: true
         }
       },
+      {
+        name: "courseFileDetail",
+        path: "/courseManage/courseFileDetail",
+        component: 'courseManage/courseList/component/file.vue',
+        meta: {
+          icon: "el-icon-menu",
+          title: "课程文件列表",
+          hidden: true,
+          fullpage: true
+        }
+      },
     ]
   },
   {
@@ -167,6 +178,25 @@ const routes = [
         meta: {
           icon: "el-icon-menu",
           title: "评论列表"
+        }
+      },
+    ]
+  },
+  {
+    name: "fileManage",
+    path: "/fileManage",
+    meta: {
+      icon: "el-icon-eleme-filled",
+      title: "文件管理"
+    },
+    children: [
+      {
+        name: "fileList",
+        path: "/fileManage/fileList",
+        component: "fileManage/fileList/index",
+        meta: {
+          icon: "el-icon-menu",
+          title: "文件列表"
         }
       },
     ]

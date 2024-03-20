@@ -10,13 +10,6 @@ export default {
         return await http.get(this.url, params);
       }
     },
-    type: {
-      url: `${config.API_URL}/courseManage/getAllCourseType`,
-      name: "获取课程类型",
-      get: async function (params) {
-        return await http.get(this.url, params);
-      }
-    },
     detail: {
       url: `${config.API_URL}/courseManage/courseDetail`,
       name: "获取课程详情",

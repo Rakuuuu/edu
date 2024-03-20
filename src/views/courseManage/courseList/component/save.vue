@@ -14,9 +14,9 @@
         >
           <el-option
             v-for="item in courseTypes"
-            :value="item.courseType"
-            :key="item.courseTypeName"
-            :label="item.courseTypeName"
+            :value="item.value"
+            :key="item.label"
+            :label="item.label"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -61,6 +61,12 @@
       <el-form-item label="加课码" prop="adminEmail">
         <el-input v-model="form.courseCode" placeholder="请输入加课码" clearable></el-input>
       </el-form-item>
+      <el-form-item label="是否公开" prop="isPublish">
+        <el-select v-model="form.isPublish" >
+          <el-option value="0" label="否"/>
+          <el-option value="1" label="是"/>
+        </el-select>
+      </el-form-item>
     </el-form>
     <template #footer>
       <el-button @click="visible=false">取 消</el-button>
@@ -71,7 +77,7 @@
 
 <script>
 // import {emailReg, phoneReg} from "@/utils/regs";
-
+import { courseType } from '@/utils/enum'
 export default {
   emits: ['success', 'closed'],
   data() {
@@ -91,9 +97,10 @@ export default {
         courseType: '',
         courseCode: '',
         teacherId: '',
-        specialityId: ''
+        specialityId: '',
+        isPublish: ''
       },
-      courseTypes: [],
+      courseTypes: courseType,
       teacherList: [],
       specialityOptions: [],
       //验证规则
@@ -104,6 +111,9 @@ export default {
         specialityId: [
           { required: true, message: '请选择课程所属专业', trigger: 'change' }
         ],
+        isPublish: [
+          { required: true, message: '请选择课程是否公开', trigger: 'change' }
+        ]
       },
     }
   },
@@ -112,10 +122,6 @@ export default {
   methods: {
     //显示
     open(mode = 'add') {
-      this.$API.course.course.type.get().then(({ data }) => {
-        this.courseTypes = data
-      }).catch(() => {
-      })
       this.$API.user.teacher.getTeacherByNameOrNo.get().then(({ data }) => {
         this.teacherList = data
       }).catch(() => {

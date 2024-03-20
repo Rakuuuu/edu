@@ -16,7 +16,8 @@
         stripe
       >
         <el-table-column type="selection" width="50"></el-table-column>
-        <el-table-column label="名称" prop="courseName" width="180"></el-table-column>
+        <el-table-column label="课程名称" prop="courseName" width="180"></el-table-column>
+        <el-table-column label="选课人数" prop="studentCount" width="180"></el-table-column>
         <el-table-column label="创建时间" prop="createdAt" width="150"></el-table-column>
         <el-table-column label="修改时间" prop="updatedAt" width="150"></el-table-column>
         <!--        <el-table-column label="状态" prop="boolean" width="60">-->
@@ -25,10 +26,11 @@
         <!--            <sc-status-indicator v-if="!scope.row.boolean" pulse type="danger"></sc-status-indicator>-->
         <!--          </template>-->
         <!--        </el-table-column>-->
-        <el-table-column label="操作" fixed="right" align="right" width="300">
+        <el-table-column label="操作" fixed="right" align="right" width="350">
           <template #default="scope">
             <el-button plain size="small" @click="table_show(scope.row)">查看</el-button>
-            <el-button plain size="small" @click="table_choose_course(scope.row)">选课学生</el-button>
+            <el-button plain size="small" @click="table_choose_course(scope.row)">学生</el-button>
+            <el-button plain size="small" @click="table_course_file(scope.row)">文件</el-button>
             <el-button type="primary" plain size="small" @click="table_edit(scope.row)">编辑</el-button>
             <!--            <el-button type="primary" plain size="small" @click="table_edit_page(scope.row)">页面编辑-->
             <!--            </el-button>-->
@@ -94,6 +96,15 @@ export default {
     table_choose_course({ courseId }) {
       this.$router.push({
         path: '/courseManage/chooseCourseDetail',
+        query: {
+          courseId
+        }
+      })
+    },
+    //窗口查看课程文件列表
+    table_course_file({ courseId }) {
+      this.$router.push({
+        path: '/courseManage/courseFileDetail',
         query: {
           courseId
         }

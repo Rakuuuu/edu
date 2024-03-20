@@ -4,7 +4,7 @@
       <div class="comment-box">
         <div class="parent-comment" v-if="comment.parentComment?.commentId">
           <div class="parent-send-info">
-            <div class="send-user">回复：<b>{{ comment.parentComment.edu_student?.studentName || `${comment.parentComment?.edu_teacher.teacherName}（教师）` || ''}}</b></div>
+            <div class="send-user">回复：<b>{{ comment.parentComment.edu_student?.studentName || `${comment.parentComment?.edu_teacher?.teacherName}（教师）` || ''}}</b></div>
             <div class="send-time">{{ comment.parentComment.createdAt }}</div>
           </div>
           <div class="parent-comment-content" v-html="comment.parentComment?.commentContent"></div>
