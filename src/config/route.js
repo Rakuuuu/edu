@@ -5,14 +5,24 @@
 // 示例如下
 
 const routes = [
+  // {
+  //   name: "demopage",
+  //   path: "/demopage",
+  //   component: "test/autocode/index",
+  //   meta: {
+  //     icon: "el-icon-eleme-filled",
+  //     title: "控制台",
+  //     affix: true
+  //   }
+  // },
   {
-    name: "demopage",
-    path: "/demopage",
-    component: "test/autocode/index",
+    path: "/user/resetPassword",
+    name: "resetPassword",
+    component: 'login/resetPassword.vue',
     meta: {
-      icon: "el-icon-eleme-filled",
-      title: "控制台",
-      affix: true
+      title: "修改密码",
+      fullpage: true,
+      hidden: true
     }
   },
   {
@@ -77,7 +87,8 @@ const routes = [
     path: "/departmentManage",
     meta: {
       icon: "el-icon-eleme-filled",
-      title: "院系管理"
+      title: "院系管理",
+      role: ["SA"]
     },
     children: [
       {
@@ -197,6 +208,67 @@ const routes = [
         meta: {
           icon: "el-icon-menu",
           title: "文件列表"
+        }
+      },
+    ]
+  },
+  {
+    name: "examManage",
+    path: "/examManage",
+    meta: {
+      icon: "el-icon-eleme-filled",
+      title: "任务管理"
+    },
+    children: [
+      {
+        name: "questionList",
+        path: "/examManage/questionList",
+        component: "examManage/questionManage/index",
+        meta: {
+          icon: "el-icon-menu",
+          title: "题目列表"
+        }
+      },
+      {
+        name: "questionDetail",
+        path: "/examManage/questionDetail",
+        component: "examManage/questionManage/detail/index",
+        meta: {
+          icon: "el-icon-menu",
+          title: "题目详情",
+          fullpage: true,
+          hidden: true
+        }
+      },
+      {
+        name: "examList",
+        path: "/examManage/examManage",
+        component: "examManage/examManage/index",
+        meta: {
+          icon: "el-icon-menu",
+          title: "任务列表"
+        }
+      },
+      {
+        name: "examDetail",
+        path: "/examManage/examDetail",
+        component: "examManage/examManage/detail/index",
+        meta: {
+          icon: "el-icon-menu",
+          title: "任务详情",
+          fullpage: true,
+          hidden: true
+        }
+      },
+      {
+        name: "examRecord",
+        path: "/examManage/examRecord",
+        component: "examManage/examManage/component/info.vue",
+        meta: {
+          icon: "el-icon-menu",
+          title: "考试记录",
+          fullpage: true,
+          hidden: true
         }
       },
     ]

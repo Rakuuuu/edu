@@ -19,7 +19,7 @@
         <el-table-column label="文件名" width="300">
           <template #default="{ row }">
             <div class="file-name-custom">
-              <img :src="`/img/file_types/${getFileTypeFromMIME(row.fileType)}`"/>
+              <img :src="`img/file_types/${getFileTypeFromMIME(row.fileType)}`"/>
               <div class="file-name">
                 {{ row.fileName }}
               </div>
@@ -70,7 +70,7 @@
 
 <script>
 import saveDialog from './component/save.vue'
-import {formatBytes, getFileTypeFromMIME} from '../../../utils/enum'
+import {formatBytes, getFileTypeFromMIME} from '@/utils/enum'
 
 export default {
   name: 'teacherList',

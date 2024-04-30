@@ -9,7 +9,7 @@
         <div class="common-header-title">{{ title }}</div>
       </div>
       <div class="common-header-right">
-        <router-link to="/login">返回登录</router-link>
+        <el-button icon="el-icon-close" @click="$router.back()">关闭</el-button>
       </div>
     </el-header>
     <el-main>

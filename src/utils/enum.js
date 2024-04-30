@@ -13,6 +13,27 @@ export const courseType = [
   { label: '通识课', value: '5' }
 ]
 
+
+/**
+ * 题目类型枚举
+ */
+export const questionType = [
+  { label: '单选题', value: '1' },
+  { label: '填空题', value: '2' },
+  { label: '判断题', value: '3' },
+  { label: '简答题', value: '4' },
+  { label: '主观题', value: '5' },
+  { label: '多选题', value: '6' },
+]
+
+/**
+ * 作业类型枚举
+ */
+export const examType = [
+  { label: '作业', value: '1' },
+  { label: '考试', value: '2' }
+]
+
 // 获取文件类型，展示不同的图标
 export function getFileTypeFromMIME (mimeType) {
   switch (mimeType) {

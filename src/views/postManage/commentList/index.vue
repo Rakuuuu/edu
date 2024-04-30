@@ -16,7 +16,11 @@
         stripe
       >
         <el-table-column type="selection" width="50"></el-table-column>
-        <el-table-column label="评论内容" prop="commentContent" width="180"></el-table-column>
+        <el-table-column label="评论内容" prop="commentContent" width="180">
+          <template v-slot="{ row }">
+            {{ row.commentContent?.replace(/<[^>]*>/g, '') }}
+          </template>
+        </el-table-column>
         <el-table-column label="所属帖子名称" prop="postTitle" width="180"></el-table-column>
         <el-table-column label="发布人" width="180">
           <template #default="{ row: { studentName, teacherName } }">
@@ -24,7 +28,11 @@
           </template>
         </el-table-column>
         <el-table-column label="所属课程" prop="courseName" width="180"></el-table-column>
-        <el-table-column label="评论时间" prop="createdAt" width="150"></el-table-column>
+        <el-table-column label="评论时间" prop="createdAt" width="150">
+          <template v-slot="{ row }">
+            {{ $TOOL.dateFormat(row.createdAt)}}
+          </template>
+        </el-table-column>
 
         <el-table-column label="操作" fixed="right" align="right" width="200">
           <template #default="scope">

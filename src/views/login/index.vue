@@ -1,53 +1,6 @@
 <template>
   <div class="login_bg">
-    <div class="login_adv" style="background-image: url(img/auth_banner.jpg);">
-      <div class="login_adv__title">
-        <h2>SCUI</h2>
-        <h4>{{ $t('login.slogan') }}</h4>
-        <p>{{ $t('login.describe') }}</p>
-        <div>
-					<span>
-						<el-icon><sc-icon-vue/></el-icon>
-					</span>
-          <span>
-						<el-icon class="add"><el-icon-plus/></el-icon>
-					</span>
-          <span>
-						<el-icon><el-icon-eleme-filled/></el-icon>
-					</span>
-        </div>
-      </div>
-      <div class="login_adv__mask"></div>
-      <div class="login_adv__bottom">
-        © {{ $CONFIG.APP_NAME }} {{ $CONFIG.APP_VER }}
-      </div>
-    </div>
     <div class="login_main">
-      <div class="login_config">
-        <el-button :icon="config.dark?'el-icon-sunny':'el-icon-moon'" circle type="info"
-                   @click="configDark"></el-button>
-        <el-dropdown trigger="click" placement="bottom-end" @command="configLang">
-          <el-button circle>
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                 aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet"
-                 viewBox="0 0 512 512">
-              <path
-                d="M478.33 433.6l-90-218a22 22 0 0 0-40.67 0l-90 218a22 22 0 1 0 40.67 16.79L316.66 406h102.67l18.33 44.39A22 22 0 0 0 458 464a22 22 0 0 0 20.32-30.4zM334.83 362L368 281.65L401.17 362z"
-                fill="currentColor"></path>
-              <path
-                d="M267.84 342.92a22 22 0 0 0-4.89-30.7c-.2-.15-15-11.13-36.49-34.73c39.65-53.68 62.11-114.75 71.27-143.49H330a22 22 0 0 0 0-44H214V70a22 22 0 0 0-44 0v20H54a22 22 0 0 0 0 44h197.25c-9.52 26.95-27.05 69.5-53.79 108.36c-31.41-41.68-43.08-68.65-43.17-68.87a22 22 0 0 0-40.58 17c.58 1.38 14.55 34.23 52.86 83.93c.92 1.19 1.83 2.35 2.74 3.51c-39.24 44.35-77.74 71.86-93.85 80.74a22 22 0 1 0 21.07 38.63c2.16-1.18 48.6-26.89 101.63-85.59c22.52 24.08 38 35.44 38.93 36.1a22 22 0 0 0 30.75-4.9z"
-                fill="currentColor"></path>
-            </svg>
-          </el-button>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item v-for="item in lang" :key="item.value" :command="item"
-                                :class="{'selected':config.lang==item.value}">{{ item.name }}
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-      </div>
       <div class="login-form">
         <div class="login-header">
           <div class="logo">
@@ -55,14 +8,7 @@
             <label>{{ $CONFIG.APP_NAME }}</label>
           </div>
         </div>
-        <el-tabs>
-          <el-tab-pane :label="$t('login.accountLogin')" lazy>
-            <password-form></password-form>
-          </el-tab-pane>
-          <!--					<el-tab-pane :label="$t('login.mobileLogin')" lazy>-->
-          <!--						<phone-form></phone-form>-->
-          <!--					</el-tab-pane>-->
-        </el-tabs>
+        <password-form></password-form>
         <!--				<template v-if="$CONFIG.MY_SHOW_LOGIN_OAUTH">-->
         <!--					<el-divider>{{ $t('login.signInOther') }}</el-divider>-->
         <!--&lt;!&ndash;					<div class="login-oauth">&ndash;&gt;-->
@@ -165,19 +111,45 @@ export default {
   height: 100%;
   background: #fff;
   display: flex;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.login_bg::before {
+  z-index: -1;
+  position: absolute;
+  content: '';
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-size: 75%;
+  background-position: center left;
+  background-repeat: no-repeat;
+  background-image: url("/public/img/logo.png");
+  filter: blur(150px);
+  animation: rotating linear 60s infinite;
+}
+
+@keyframes rotating {
+  0% {
+    transform: rotate(0deg);
+  } 50% {
+      transform: rotate(180deg);
+    } 100% {
+        transform: rotate(360deg);
+      }
 }
 
 .login_adv {
   width: 33.33333%;
-  background-color: #555;
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
   position: relative;
+  z-index: 10;
 }
 
 .login_adv__title {
-  color: #fff;
+  color: var(--el-text-color-secondary);
   padding: 40px;
   position: absolute;
   top: 0px;
@@ -200,7 +172,7 @@ export default {
   font-size: 14px;
   margin-top: 10px;
   line-height: 1.8;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--el-text-color-secondary);
 }
 
 .login_adv__title div {
@@ -219,7 +191,7 @@ export default {
 
 .login_adv__title div i.add {
   font-size: 20px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--el-text-color-secondary);
 }
 
 .login_adv__bottom {
@@ -227,9 +199,8 @@ export default {
   left: 0px;
   right: 0px;
   bottom: 0px;
-  color: #fff;
+  color: var(--el-text-color-secondary);
   padding: 40px;
-  background-image: linear-gradient(transparent, #000);
   z-index: 3;
 }
 
@@ -239,7 +210,7 @@ export default {
   left: 0px;
   right: 0px;
   bottom: 0px;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.2);
   z-index: 1;
 }
 
@@ -247,12 +218,15 @@ export default {
   flex: 1;
   overflow: auto;
   display: flex;
+  position: relative;
+  z-index: 10;
 }
 
 .login-form {
   width: 400px;
   margin: auto;
   padding: 20px 0;
+  z-index: 10;
 }
 
 .login-header {

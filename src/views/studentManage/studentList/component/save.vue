@@ -13,8 +13,44 @@
       <el-form-item label="手机号" prop="studentPhone">
         <el-input v-model="form.studentPhone" placeholder="请输入手机号" clearable></el-input>
       </el-form-item>
+      <el-form-item label="学号" prop="studentNo">
+        <el-input type="number" v-model="form.studentNo" placeholder="请输入学号" clearable></el-input>
+      </el-form-item>
+      <el-form-item label="年龄" prop="studentAge">
+        <el-input-number :max="100" :min="0" :precision="0" :step="1" v-model="form.studentAge" placeholder="年龄" clearable></el-input-number>
+      </el-form-item>
       <el-form-item label="邮箱" prop="studentEmail">
         <el-input v-model="form.studentEmail" placeholder="请输入邮箱" clearable></el-input>
+      </el-form-item>
+      <el-form-item label="性别" prop="studentSex">
+        <el-select v-model="form.studentSex" placeholder="请选择性别">
+          <el-option value="" label="未知"></el-option>
+          <el-option value="1" label="男"></el-option>
+          <el-option value="2" label="女"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="所属专业" prop="specialityId">
+        <el-select
+          v-model="form.specialityId"
+          placeholder="请选择"
+          :disabled="mode!=='add'"
+        >
+          <el-option-group
+            v-for="group in specialityOptions"
+            :key="group.departmentName"
+            :label="group.departmentName"
+          >
+            <el-option
+              v-for="item in group.edu_specialities"
+              :key="item.specialityName"
+              :label="item.specialityName"
+              :value="item.specialityId"
+            />
+          </el-option-group>
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="studentIntroduction" label="个人简介">
+        <el-input type="textarea" placeholder="输入简介" v-model="form.studentIntroduction"></el-input>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -37,19 +73,30 @@ export default {
         edit: '编辑',
         show: '查看'
       },
+      specialityOptions: [],
       visible: false,
       isSaveing: false,
       //表单数据
       form: {
         studentName: "",
-        // studentSex: "男",
+        studentSex: "男",
         studentPhone: "",
-        studentEmail: ""
+        studentEmail: "",
+        studentAge: "",
+        specialityId: "",
+        studentNo: "",
+        studentIntroduction: ""
       },
       //验证规则
       rules: {
         studentName: [
           {required: true, message: '请输入姓名', trigger: 'blur' }
+        ],
+        specialityId: [
+          {required: true, message: '请选择专业', trigger: 'change' }
+        ],
+        studentNo: [
+          { required: true, message: '请输入学号', trigger: 'blur' }
         ],
         studentPhone: [
           {
@@ -96,6 +143,10 @@ export default {
     open(mode = 'add') {
       this.mode = mode;
       this.visible = true;
+      this.$API.department.speciality.all.get().then(({ data }) => {
+        this.specialityOptions = data
+      }).catch(() => {
+      })
       return this
     },
     //表单提交方法

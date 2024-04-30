@@ -119,5 +119,21 @@ export default {
         return await http.post(this.url, params);
       }
     }
+  },
+  common: {
+    resetUserPassword: {
+      url: `${config.API_URL}/common/resetUserPassword`,
+      name: "重置用户密码",
+      post: async function (params) {
+        return await http.post(this.url, params);
+      }
+    },
+    updateAdminPassword: {
+      url: `${config.API_URL}/common/updateAdminPassword`,
+      name: "修改管理员密码",
+      post: async function (params) {
+        return await http.post(this.url, params);
+      }
+    }
   }
 }

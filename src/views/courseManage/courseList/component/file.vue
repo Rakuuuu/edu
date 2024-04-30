@@ -33,7 +33,11 @@
             {{ row.edu_student?.studentName || `${row.edu_teacher?.teacherName}（教师）` || '' }}
           </template>
         </el-table-column>
-        <el-table-column label="上传时间" prop="createdAt" width="150"></el-table-column>
+        <el-table-column label="上传时间" prop="createdAt" width="150">
+          <template v-slot="{ row }">
+            {{ $TOOL.dateFormat(row.createdAt)}}
+          </template>
+        </el-table-column>
         <el-table-column label="操作" fixed="right" align="right" width="100">
           <template #default="scope">
             <el-popconfirm title="确定移除吗？" @confirm="table_del(scope.row)">

@@ -17,8 +17,16 @@
       >
         <el-table-column type="selection" width="50"></el-table-column>
         <el-table-column label="名称" prop="departmentName" width="180"></el-table-column>
-        <el-table-column label="创建时间" prop="createdAt" width="150"></el-table-column>
-        <el-table-column label="修改时间" prop="updatedAt" width="150"></el-table-column>
+        <el-table-column label="创建时间" prop="createdAt" width="150">
+          <template v-slot="{ row }">
+            {{ $TOOL.dateFormat(row.createdAt)}}
+          </template>
+        </el-table-column>
+        <el-table-column label="修改时间" prop="updatedAt" width="150">
+          <template v-slot="{ row }">
+            {{ $TOOL.dateFormat(row.updatedAt)}}
+          </template>
+        </el-table-column>
         <!--        <el-table-column label="状态" prop="boolean" width="60">-->
         <!--          <template #default="scope">-->
         <!--            <sc-status-indicator v-if="scope.row.boolean" type="success"></sc-status-indicator>-->

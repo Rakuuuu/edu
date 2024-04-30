@@ -19,8 +19,16 @@
         <el-table-column label="姓名" prop="teacherName" width="180"></el-table-column>
         <el-table-column label="手机号" prop="teacherPhone" width="150"></el-table-column>
         <el-table-column label="邮箱" prop="teacherEmail" width="250"></el-table-column>
-        <el-table-column label="创建时间" prop="createdAt" width="150"></el-table-column>
-        <el-table-column label="修改时间" prop="updatedAt" width="150"></el-table-column>
+        <el-table-column label="创建时间" prop="createdAt" width="150">
+          <template v-slot="{ row }">
+            {{ $TOOL.dateFormat(row.createdAt)}}
+          </template>
+        </el-table-column>
+        <el-table-column label="修改时间" prop="updatedAt" width="150">
+          <template v-slot="{ row }">
+            {{ $TOOL.dateFormat(row.updatedAt)}}
+          </template>
+        </el-table-column>
         <!--        <el-table-column label="状态" prop="boolean" width="60">-->
         <!--          <template #default="scope">-->
         <!--            <sc-status-indicator v-if="scope.row.boolean" type="success"></sc-status-indicator>-->

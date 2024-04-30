@@ -16,7 +16,11 @@
         <el-table-column type="selection" width="50"></el-table-column>
         <el-table-column label="学生姓名" prop="studentName" width="180"></el-table-column>
         <el-table-column label="学号" prop="studentNo" width="150"></el-table-column>
-        <el-table-column label="选课时间" prop="createdAt" width="150"></el-table-column>
+        <el-table-column label="选课时间" prop="createdAt" width="150">
+          <template v-slot="{ row }">
+            {{ $TOOL.dateFormat(row.createdAt)}}
+          </template>
+        </el-table-column>
         <el-table-column label="操作" fixed="right" align="right" width="300">
           <template #default="scope">
             <el-popconfirm title="确定删除吗？" @confirm="table_del(scope.row, scope.$index)">
@@ -55,7 +59,10 @@ export default {
     },
     // 删除单个选课信息
     table_del (row, /* index */) {
-      this.$API.course.course.deleteChooseInfo.post({ studentIdList: [row.studentId] }).then(() => {
+      this.$API.course.course.deleteChooseInfo.post({
+        studentIdList: [row.studentId],
+        courseId: this.courseId
+      }).then(() => {
         this.$message({
           type: 'success',
           message: '删除成功'

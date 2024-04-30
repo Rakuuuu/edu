@@ -22,13 +22,6 @@ const routes = [
     meta: {
       title: "注册"
     }
-  },
-  {
-    path: "/reset_password",
-    component: () => import(/* webpackChunkName: "resetPassword" */ '@/views/login/resetPassword'),
-    meta: {
-      title: "重置密码"
-    }
   }
 ]
 

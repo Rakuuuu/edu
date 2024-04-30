@@ -2,8 +2,8 @@
   <el-container>
     <el-header>
       <div class="left-panel">
-        <el-button type="primary" icon="el-icon-plus" @click="add"></el-button>
-        <el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0"
+<!--        <el-button type="primary" icon="el-icon-plus" @click="add"></el-button>-->
+        <el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length===0"
                    @click="batch_del"></el-button>
       </div>
     </el-header>
@@ -15,35 +15,49 @@
         @selection-change="selectionChange"
         stripe
       >
-        <el-table-column type="selection" width="50"></el-table-column>
-        <el-table-column label="姓名" prop="studentName" width="180"></el-table-column>
-        <el-table-column label="手机号" prop="studentPhone" width="150"></el-table-column>
-        <el-table-column label="邮箱" prop="studentEmail" width="250"></el-table-column>
+        <el-table-column type="selection" width="50" :selectable="(row) => row.isUsed===0"></el-table-column>
+        <el-table-column label="题目内容" prop="questionContent" width="300">
+          <template v-slot="{ row }">
+            {{ row.questionContent.replace(/<[^>]*>/g, '') }}
+          </template>
+        </el-table-column>
+        <el-table-column label="题目类型" width="150">
+          <template v-slot="{ row }">
+            {{ getQuestionTypeName(row) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="使用数" prop="isUsed">
+        </el-table-column>
+        <el-table-column label="所属课程" width="150">
+          <template v-slot="{ row }">
+            <div>{{ row.edu_course.courseName }}</div>
+            <div>（{{ row.edu_course?.edu_speciality?.specialityName }}）</div>
+          </template>
+        </el-table-column>
+          <el-table-column label="创建人" width="150">
+            <template v-slot="{ row }">
+              {{ row.edu_course.edu_teacher.teacherName }}
+            </template>
+        </el-table-column>
         <el-table-column label="创建时间" prop="createdAt" width="150">
           <template v-slot="{ row }">
-            {{ $TOOL.dateFormat(row.createdAt)}}
+            {{ dateFormat(row.createdAt) }}
           </template>
         </el-table-column>
         <el-table-column label="修改时间" prop="updatedAt" width="150">
           <template v-slot="{ row }">
-            {{ $TOOL.dateFormat(row.updatedAt)}}
-          </template>
-        </el-table-column>
-        <!--        <el-table-column label="状态" prop="boolean" width="60">-->
-        <!--          <template #default="scope">-->
-        <!--            <sc-status-indicator v-if="scope.row.boolean" type="success"></sc-status-indicator>-->
-        <!--            <sc-status-indicator v-if="!scope.row.boolean" pulse type="danger"></sc-status-indicator>-->
-        <!--          </template>-->
-        <!--        </el-table-column>-->
+            {{ dateFormat(row.updatedAt) }}
+          </template></el-table-column>
         <el-table-column label="操作" fixed="right" align="right" width="300">
           <template #default="scope">
             <el-button plain size="small" @click="table_show(scope.row)">查看</el-button>
-            <el-button type="primary" plain size="small" @click="table_edit(scope.row)">编辑</el-button>
+<!--            <el-button type="primary" plain size="small" @click="table_edit(scope.row)">编辑</el-button>-->
             <!--            <el-button type="primary" plain size="small" @click="table_edit_page(scope.row)">页面编辑-->
             <!--            </el-button>-->
-            <el-popconfirm title="确定删除吗？" @confirm="table_del(scope.row, scope.$index)">
+            <el-popconfirm
+              title="确定删除吗？" @confirm="table_del(scope.row, scope.$index)">
               <template #reference>
-                <el-button plain type="danger" size="small">删除</el-button>
+                <el-button :disabled="scope.row.isUsed!==0" plain type="danger" size="small">删除</el-button>
               </template>
             </el-popconfirm>
           </template>
@@ -59,10 +73,12 @@
 </template>
 
 <script>
+import tool from '@/utils/tool'
 import saveDialog from './component/save.vue'
+import {questionType} from '@/utils/enum'
 
 export default {
-  name: 'studentList',
+  name: 'questionList',
   components: {
     saveDialog
   },
@@ -72,9 +88,10 @@ export default {
         save: false
       },
       list: {
-        apiObj: this.$API.user.student.list
+        apiObj: this.$API.exam.question.list
       },
-      selection: []
+      selection: [],
+      questionType
     }
   },
   mounted() {
@@ -86,6 +103,12 @@ export default {
       this.$nextTick(() => {
         this.$refs.saveDialog.open()
       })
+    },
+    dateFormat: tool.dateFormat,
+    // 获取题目类型名称
+    getQuestionTypeName (item) {
+      const matchRecord = this.questionType.find(v => v.value === item.questionType)
+      return matchRecord.label
     },
     //窗口编辑
     table_edit(row) {
@@ -111,15 +134,21 @@ export default {
     },
     //查看
     table_show(row) {
-      this.dialog.save = true
-      this.$nextTick(() => {
-        this.$refs.saveDialog.open('show').setData(row)
+      // this.dialog.save = true
+      // this.$nextTick(() => {
+      //   this.$refs.saveDialog.open('show').setData(row)
+      // })
+      this.$router.push({
+        name: 'questionDetail',
+        query: {
+          questionId: row.questionId
+        }
       })
     },
     //删除明细
     table_del(row) {
-      const studentIdList = [row.studentId]
-      this.$API.user.student.delete.post({ studentIdList }).then(() => {
+      const questionIdList = [row.questionId]
+      this.$API.exam.question.delete.post({ questionIdList }).then(() => {
         this.$message({
           message: '删除成功',
           type: 'success'
@@ -132,8 +161,8 @@ export default {
     async batch_del() {
       try {
         await this.$confirm(`确定删除选中数据吗？`, '提示', { type: 'warning' })
-        await this.$API.user.student.delete.post({
-          studentIdList: this.selection.map(({ studentId }) => studentId)
+        await this.$API.exam.question.delete.post({
+          questionIdList: this.selection.map(({ questionId }) => questionId)
         })
         this.$message.success("操作成功")
         this.$refs.table.refresh()

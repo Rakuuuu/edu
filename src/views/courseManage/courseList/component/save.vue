@@ -61,8 +61,9 @@
       <el-form-item label="加课码" prop="adminEmail">
         <el-input v-model="form.courseCode" placeholder="请输入加课码" clearable></el-input>
       </el-form-item>
-      <el-form-item label="是否公开" prop="isPublish">
-        <el-select v-model="form.isPublish" >
+      <el-form-item label="是否公开" prop="isPublish" >
+        <el-select v-model="form.isPublish"
+                   :disabled="mode!=='add'">
           <el-option value="0" label="否"/>
           <el-option value="1" label="是"/>
         </el-select>
