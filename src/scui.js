@@ -19,7 +19,7 @@ import scForm from './components/scForm'
 import scTitle from './components/scTitle'
 import scWaterMark from './components/scWaterMark'
 import scQrCode from './components/scQrCode'
-
+import scSearchForm from './components/scSearchForm'
 import scStatusIndicator from './components/scMini/scStatusIndicator'
 import scTrend from './components/scMini/scTrend'
 
@@ -55,6 +55,7 @@ export default {
     app.component('scTableSelect', scTableSelect);
     app.component('scPageHeader', scPageHeader);
     app.component('scSelect', scSelect);
+    app.component('scSearchForm', scSearchForm);
     app.component('scDialog', scDialog);
     app.component('scForm', scForm);
     app.component('scTitle', scTitle);

@@ -1,15 +1,21 @@
 <template>
   <el-dialog :title="titleMap[mode]" v-model="visible" :width="500" destroy-on-close @closed="$emit('closed')">
     <el-form :model="form" :rules="rules" :disabled="mode=='show'" ref="dialogForm" label-width="100px">
+      <el-form-item label="头像" prop="teacherAvatar">
+        <sc-upload
+          v-model="form.teacherAvatar"
+          title="上传头像"
+          :cropper="true"
+          :compress="1"
+          :disabled="mode=='show'"
+          :maxSize="5 * 1024 * 1024"
+          :apiObj="$API.file.file.uploadStatic"
+          :aspectRatio="1/1"
+        ></sc-upload>
+      </el-form-item>
       <el-form-item label="姓名" prop="teacherName">
         <el-input v-model="form.teacherName" placeholder="请输入姓名" clearable></el-input>
       </el-form-item>
-      <!--      <el-form-item label="性别" prop="sex">-->
-      <!--        <el-radio-group v-model="form.sex">-->
-      <!--          <el-radio label="男">男</el-radio>-->
-      <!--          <el-radio label="女">女</el-radio>-->
-      <!--        </el-radio-group>-->
-      <!--      </el-form-item>-->
       <el-form-item label="手机号" prop="teacherPhone">
         <el-input v-model="form.teacherPhone" placeholder="请输入手机号" clearable></el-input>
       </el-form-item>
@@ -78,6 +84,7 @@ export default {
       specialityOptions: [],
       //表单数据
       form: {
+        teacherAvatar: "",
         teacherName: "",
         teacherSex: "",
         specialityId: "",

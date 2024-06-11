@@ -6,6 +6,12 @@
         <el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0"
                    @click="batch_del"></el-button>
       </div>
+      <div>
+        <sc-search-form
+          :listForm="searchForm"
+          @searchHandler="searchHandler"
+        />
+      </div>
     </el-header>
     <el-main class="nopadding">
       <scTable
@@ -40,11 +46,11 @@
             <el-button type="primary" plain size="small" @click="table_edit_page(scope.row)">编辑</el-button>
             <!--            <el-button type="primary" plain size="small" @click="table_edit_page(scope.row)">页面编辑-->
             <!--            </el-button>-->
-<!--            <el-popconfirm title="确定删除吗？" @confirm="table_del(scope.row, scope.$index)">-->
-<!--              <template #reference>-->
-<!--                <el-button plain type="danger" size="small">删除</el-button>-->
-<!--              </template>-->
-<!--            </el-popconfirm>-->
+            <el-popconfirm title="确定删除吗？" @confirm="table_del(scope.row, scope.$index)">
+              <template #reference>
+                <el-button plain type="danger" size="small">删除</el-button>
+              </template>
+            </el-popconfirm>
           </template>
         </el-table-column>
       </scTable>
@@ -59,10 +65,12 @@
 
 <script>
 import saveDialog from './component/save.vue'
+import ScSearchForm from '@/components/scSearchForm/index.vue'
 
 export default {
   name: 'postList',
   components: {
+    ScSearchForm,
     saveDialog
   },
   data() {
@@ -73,12 +81,22 @@ export default {
       list: {
         apiObj: this.$API.post.post.list
       },
-      selection: []
+      selection: [],
+      searchForm: [
+        {
+          type: 'input',
+          keyName: 'postTitle',
+          placeholder: '帖子标题',
+        },
+      ]
     }
   },
   mounted() {
   },
   methods: {
+    searchHandler (val) {
+      this.$refs.table.reload(val)
+    },
     //窗口新增
     add() {
       this.dialog.save = true

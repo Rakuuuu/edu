@@ -1,7 +1,7 @@
 /* 全局 */
 #app, body, html {
-  width: 100%;
-  min-width: 1000px;
+  width: 100% !important;
+  min-width: 1000px !important;
   height: 100%;
   background-color: #f6f8f9;
   font-size: 12px;
@@ -473,4 +473,13 @@ a, button, input, textarea {
 .sc-page {
   width: 1230px;
   margin: 0 auto;
+}
+
+.el-header {
+  height: fit-content !important;
+}
+
+.el-textarea__inner {
+  resize: none !important;
+  height: 200px !important;
 }

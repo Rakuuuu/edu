@@ -6,6 +6,12 @@
         <el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0"
                    @click="batch_del"></el-button>
       </div>
+      <div>
+        <sc-search-form
+          :listForm="searchForm"
+          @searchHandler="searchHandler"
+        />
+      </div>
     </el-header>
     <el-main class="nopadding">
       <scTable
@@ -18,16 +24,26 @@
         <el-table-column type="selection" width="50"></el-table-column>
         <el-table-column label="评论内容" prop="commentContent" width="180">
           <template v-slot="{ row }">
-            {{ row.commentContent?.replace(/<[^>]*>/g, '') }}
+            <div class="comment-content">
+              {{ row.commentContent?.replace(/<[^>]*>/g, '') }}
+            </div>
           </template>
         </el-table-column>
-        <el-table-column label="所属帖子名称" prop="postTitle" width="180"></el-table-column>
+        <el-table-column label="所属帖子名称" prop="postTitle" width="180">
+          <template #default="{ row: { edu_post } }">
+            {{ edu_post.postTitle }}
+          </template>
+        </el-table-column>
         <el-table-column label="发布人" width="180">
-          <template #default="{ row: { studentName, teacherName } }">
-            {{ studentName || `${teacherName}（教师）` }}
+          <template #default="{ row: { edu_student, edu_teacher } }">
+            {{ edu_student?.studentName || `${edu_teacher?.teacherName}（教师）` }}
           </template>
         </el-table-column>
-        <el-table-column label="所属课程" prop="courseName" width="180"></el-table-column>
+        <el-table-column label="所属课程" prop="courseName" width="180">
+          <template #default="{ row: { edu_post: { edu_course } } }">
+            {{ edu_course?.courseName }}
+          </template>
+        </el-table-column>
         <el-table-column label="评论时间" prop="createdAt" width="150">
           <template v-slot="{ row }">
             {{ $TOOL.dateFormat(row.createdAt)}}
@@ -56,10 +72,12 @@
 
 <script>
 import saveDialog from './component/save.vue'
+import ScSearchForm from '@/components/scSearchForm/index.vue'
 
 export default {
   name: 'commentList',
   components: {
+    ScSearchForm,
     saveDialog
   },
   data() {
@@ -70,12 +88,22 @@ export default {
       list: {
         apiObj: this.$API.post.comment.list
       },
-      selection: []
+      selection: [],
+      searchForm: [
+        {
+          type: 'input',
+          keyName: 'commentContent',
+          placeholder: '评论内容',
+        },
+      ]
     }
   },
   mounted() {
   },
   methods: {
+    searchHandler (val) {
+      this.$refs.table.reload(val)
+    },
     //窗口新增
     add() {
       this.dialog.save = true
@@ -150,5 +178,10 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+.comment-content {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 </style>

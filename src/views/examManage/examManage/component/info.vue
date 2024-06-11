@@ -1,8 +1,11 @@
 <template>
   <el-container>
     <el-header>
-      <div class="title"> 考试记录详情 </div>
-      <div><el-button icon="el-icon-close" @click="$router.go(-1)">关闭</el-button></div>
+      <div class="title"> 任务记录详情 </div>
+      <div>
+        <el-button type="primary" @click="exportReport">导出报表</el-button>
+        <el-button icon="el-icon-close" @click="$router.go(-1)">关闭</el-button>
+      </div>
     </el-header>
     <el-main class="nopadding">
       <sc-table
@@ -38,15 +41,6 @@
         </el-table-column>
         <el-table-column label="得分" prop="examScore">
         </el-table-column>
-        <el-table-column label="操作" fixed="right" align="right" width="300">
-<!--          <template #default="scope">-->
-<!--            <el-popconfirm title="确定删除吗？" @confirm="table_del(scope.row, scope.$index)">-->
-<!--              <template #reference>-->
-<!--                <el-button plain type="danger" size="small">删除</el-button>-->
-<!--              </template>-->
-<!--            </el-popconfirm>-->
-<!--          </template>-->
-        </el-table-column>
       </sc-table>
     </el-main>
   </el-container>
@@ -75,6 +69,22 @@ export default {
     //表格选择后回调事件
     selectionChange(selection) {
       this.selection = selection
+    },
+    // 导出报表
+    async exportReport () {
+      try {
+        const link = document.createElement('a')
+        link.style.display = 'none'
+        link.href =`${this.$API.exam.exam.condition.url}?examId=${this.examId}`
+        link.setAttribute(
+          'download',
+          '任务情况统计报表.xlsx'
+        )
+        document.body.appendChild(link)
+        link.click()
+      } catch (err) {
+        //
+      }
     },
     // 删除单个选课信息
   //   table_del (row, /* index */) {

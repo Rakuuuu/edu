@@ -1,6 +1,20 @@
 <template>
   <el-dialog :title="titleMap[mode]" v-model="visible" :width="650" destroy-on-close @closed="$emit('closed')">
     <el-form :model="form" :rules="rules" :disabled="mode=='show'" ref="dialogForm" label-width="120px">
+      <el-form-item label="课程封面" prop="courseCover">
+        <sc-upload
+          v-model="form.courseCover"
+          title="上传封面"
+          :cropper="true"
+          :compress="1"
+          :width="400"
+          :height="200"
+          :disabled="mode=='show'"
+          :maxSize="5 * 1024 * 1024"
+          :apiObj="$API.file.file.uploadStatic"
+          :aspectRatio="4/2.5"
+        ></sc-upload>
+      </el-form-item>
       <el-form-item label="课程名称" prop="courseName">
         <el-input v-model="form.courseName" placeholder="请输入课程名称" clearable></el-input>
       </el-form-item>
@@ -24,6 +38,7 @@
         <el-select
           v-model="form.teacherId"
           :disabled="mode!=='add'"
+          filterable
         >
           <el-option
             v-for="item in teacherList"
@@ -93,6 +108,7 @@ export default {
       isSaveing: false,
       //表单数据
       form: {
+        courseCover: "",
         courseName: '',
         courseDescription: '',
         courseType: '',
@@ -162,5 +178,9 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+:deep(.el-upload--picture-card) {
+  width: 100%;
+  height: 100%;
+}
 </style>

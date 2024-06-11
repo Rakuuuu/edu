@@ -6,6 +6,12 @@
         <el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length===0"
                    @click="batch_del"></el-button>
       </div>
+      <div>
+        <sc-search-form
+          :listForm="searchForm"
+          @searchHandler="searchHandler"
+        />
+      </div>
     </el-header>
     <el-main class="nopadding">
       <scTable
@@ -76,10 +82,12 @@
 import tool from '@/utils/tool'
 import saveDialog from './component/save.vue'
 import {questionType} from '@/utils/enum'
+import ScSearchForm from '@/components/scSearchForm/index.vue'
 
 export default {
   name: 'questionList',
   components: {
+    ScSearchForm,
     saveDialog
   },
   data() {
@@ -91,12 +99,28 @@ export default {
         apiObj: this.$API.exam.question.list
       },
       selection: [],
-      questionType
+      questionType,
+      searchForm: [
+        {
+          type: 'input',
+          keyName: 'questionContent',
+          placeholder: '题目内容',
+        },
+        {
+          type: 'select',
+          keyName: 'questionType',
+          placeholder: '题目类型',
+          options: questionType
+        },
+      ]
     }
   },
   mounted() {
   },
   methods: {
+    searchHandler (val) {
+      this.$refs.table.reload(val)
+    },
     //窗口新增
     add() {
       this.dialog.save = true

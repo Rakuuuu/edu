@@ -6,6 +6,12 @@
         <el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0"
                    @click="batch_del"></el-button>
       </div>
+      <div>
+        <sc-search-form
+          :listForm="searchForm"
+          @searchHandler="searchHandler"
+        />
+      </div>
     </el-header>
     <el-main class="nopadding">
       <scTable
@@ -17,18 +23,11 @@
       >
         <el-table-column type="selection" width="50"></el-table-column>
         <el-table-column label="姓名" prop="studentName" width="180"></el-table-column>
+        <el-table-column label="学号" prop="studentNo" width="180"></el-table-column>
         <el-table-column label="手机号" prop="studentPhone" width="150"></el-table-column>
         <el-table-column label="邮箱" prop="studentEmail" width="250"></el-table-column>
-        <el-table-column label="创建时间" prop="createdAt" width="150">
-          <template v-slot="{ row }">
-            {{ $TOOL.dateFormat(row.createdAt)}}
-          </template>
-        </el-table-column>
-        <el-table-column label="修改时间" prop="updatedAt" width="150">
-          <template v-slot="{ row }">
-            {{ $TOOL.dateFormat(row.updatedAt)}}
-          </template>
-        </el-table-column>
+        <el-table-column label="所属专业" prop="specialityName" width="150"></el-table-column>
+        <el-table-column label="所属学院" prop="departmentName" width="150"></el-table-column>
         <!--        <el-table-column label="状态" prop="boolean" width="60">-->
         <!--          <template #default="scope">-->
         <!--            <sc-status-indicator v-if="scope.row.boolean" type="success"></sc-status-indicator>-->
@@ -41,6 +40,11 @@
             <el-button type="primary" plain size="small" @click="table_edit(scope.row)">编辑</el-button>
             <!--            <el-button type="primary" plain size="small" @click="table_edit_page(scope.row)">页面编辑-->
             <!--            </el-button>-->
+            <el-popconfirm title="确定要重置密码吗？" @confirm="reset_password(scope.row)">
+              <template #reference>
+                <el-button plain type="warning" size="small">重置密码</el-button>
+              </template>
+            </el-popconfirm>
             <el-popconfirm title="确定删除吗？" @confirm="table_del(scope.row, scope.$index)">
               <template #reference>
                 <el-button plain type="danger" size="small">删除</el-button>
@@ -60,10 +64,12 @@
 
 <script>
 import saveDialog from './component/save.vue'
+import ScSearchForm from '@/components/scSearchForm/index.vue'
 
 export default {
   name: 'studentList',
   components: {
+    ScSearchForm,
     saveDialog
   },
   data() {
@@ -74,12 +80,32 @@ export default {
       list: {
         apiObj: this.$API.user.student.list
       },
-      selection: []
+      selection: [],
+      searchForm: [
+        {
+          type: 'input',
+          keyName: 'studentName',
+          placeholder: '学生姓名',
+        },
+        {
+          type: 'input',
+          keyName: 'studentNo',
+          placeholder: '学号',
+        },
+        {
+          type: 'input',
+          keyName: 'studentPhone',
+          placeholder: '手机号',
+        },
+      ]
     }
   },
   mounted() {
   },
   methods: {
+    searchHandler (val) {
+      this.$refs.table.reload(val)
+    },
     //窗口新增
     add() {
       this.dialog.save = true
@@ -127,6 +153,20 @@ export default {
         // 刷新表格
         this.$refs.table.refresh()
       }).catch(() => {})
+    },
+    // 重置密码
+    async reset_password (row) {
+      try {
+        await this.$API.user.common.resetUserPassword.post({
+          studentId: row.studentId
+        })
+        this.$message({
+          type: 'success',
+          message: '密码重置成功'
+        })
+      } catch (err) {
+        //
+      }
     },
     //批量删除
     async batch_del() {

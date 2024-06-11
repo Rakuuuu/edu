@@ -6,6 +6,12 @@
         <el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0"
                    @click="batch_del"></el-button>
       </div>
+      <div>
+        <sc-search-form
+          :listForm="searchForm"
+          @searchHandler="searchHandler"
+        />
+      </div>
     </el-header>
     <el-main class="nopadding">
       <scTable
@@ -18,14 +24,21 @@
         <el-table-column type="selection" width="50"></el-table-column>
         <el-table-column label="课程名称" prop="courseName" width="180"></el-table-column>
         <el-table-column label="选课人数" prop="studentCount" width="180"></el-table-column>
-        <el-table-column label="创建时间" prop="createdAt" width="150">
+        <el-table-column label="课程教师" prop="studentCount" width="180">
           <template v-slot="{ row }">
-            {{ $TOOL.dateFormat(row.createdAt)}}
+            <div>{{ row.teacherName }}</div>
+            <div>{{ row.teacherNo }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="修改时间" prop="updatedAt" width="150">
+        <el-table-column label="课程类型" prop="studentCount" width="180">
           <template v-slot="{ row }">
-            {{ $TOOL.dateFormat(row.updatedAt)}}
+            <div>{{ courseType?.find(v => v.value === row.courseType)?.label }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="课程所属专业" prop="specialityName" width="180">
+          <template v-slot="{ row }">
+            <div>{{ row.specialityName }}</div>
+            <div>{{ row.departmentName }}</div>
           </template>
         </el-table-column>
         <!--        <el-table-column label="状态" prop="boolean" width="60">-->
@@ -60,25 +73,45 @@
 
 <script>
 import saveDialog from './component/save.vue'
+import ScSearchForm from '@/components/scSearchForm/index.vue'
+import {courseType} from '@/utils/enum'
 export default {
   name: 'courseList',
   components: {
+    ScSearchForm,
     saveDialog
   },
   data() {
     return {
+      courseType,
       dialog: {
         save: false
       },
       list: {
         apiObj: this.$API.course.course.list
       },
-      selection: []
+      selection: [],
+      searchForm: [
+        {
+          type: 'input',
+          keyName: 'courseName',
+          placeholder: '课程名称',
+        },
+        {
+          type: 'select',
+          keyName: 'courseType',
+          placeholder: '课程类型',
+          options: courseType
+        }
+      ]
     }
   },
   mounted() {
   },
   methods: {
+    searchHandler (val) {
+      this.$refs.table.reload(val)
+    },
     //窗口新增
     add() {
       this.dialog.save = true

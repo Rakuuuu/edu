@@ -6,6 +6,12 @@
         <el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0"
                    @click="batch_del"></el-button>
       </div>
+      <div>
+        <sc-search-form
+          :listForm="searchForm"
+          @searchHandler="searchHandler"
+        />
+      </div>
     </el-header>
     <el-main class="nopadding">
       <scTable
@@ -53,7 +59,7 @@
         <!--        </el-table-column>-->
         <el-table-column label="操作" fixed="right" align="right" width="250">
           <template #default="scope">
-            <el-button plain size="small" @click="toRecord(scope.row)">考试记录</el-button>
+            <el-button plain size="small" @click="toRecord(scope.row)">任务记录</el-button>
             <el-button plain size="small" @click="table_show(scope.row)">查看</el-button>
 <!--            <el-button type="primary" plain size="small" @click="table_edit(scope.row)">编辑</el-button>-->
             <!--            <el-button type="primary" plain size="small" @click="table_edit_page(scope.row)">页面编辑-->
@@ -78,10 +84,13 @@
 <script>
 import saveDialog from './component/save.vue'
 import tool from '@/utils/tool'
+import ScSearchForm from '@/components/scSearchForm/index.vue'
+import {examType} from '@/utils/enum'
 
 export default {
   name: 'examList',
   components: {
+    ScSearchForm,
     saveDialog
   },
   data() {
@@ -92,12 +101,28 @@ export default {
       list: {
         apiObj: this.$API.exam.exam.list
       },
-      selection: []
+      selection: [],
+      searchForm: [
+        {
+          type: 'input',
+          keyName: 'examName',
+          placeholder: '任务名称',
+        },
+        {
+          type: 'select',
+          keyName: 'examType',
+          placeholder: '任务类型',
+          options: examType,
+        },
+      ]
     }
   },
   mounted() {
   },
   methods: {
+    searchHandler (val) {
+      this.$refs.table.reload(val)
+    },
     //窗口新增
     add() {
       this.dialog.save = true

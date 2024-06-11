@@ -13,8 +13,20 @@
       <el-form-item label="手机号" prop="adminPhone">
         <el-input v-model="form.adminPhone" placeholder="请输入手机号" clearable></el-input>
       </el-form-item>
-      <el-form-item label="邮箱" prop="adminEmail">
-        <el-input v-model="form.adminEmail" placeholder="请输入邮箱" clearable></el-input>
+
+      <el-form-item label="所属学院" prop="departmentId">
+        <el-select
+          v-model="form.departmentId"
+          placeholder="请选择"
+          :disabled="mode!=='add'"
+        >
+          <el-option
+            v-for="department in specialityOptions"
+            :value="department.departmentId"
+            :label="department.departmentName"
+            :key="department"
+          />
+        </el-select>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -25,7 +37,7 @@
 </template>
 
 <script>
-import {emailReg, phoneReg} from "@/utils/regs";
+import { phoneReg} from "@/utils/regs";
 
 export default {
   emits: ['success', 'closed'],
@@ -43,9 +55,9 @@ export default {
       form: {
         adminName: "",
         // adminSex: "男",
-        adminPhone: "",
-        adminEmail: ""
+        adminPhone: ""
       },
+      specialityOptions: [],
       //验证规则
       rules: {
         adminName: [
@@ -65,18 +77,6 @@ export default {
               callback()
             }
           }
-        ],
-        adminEmail: [
-          {
-            trigger: 'blur',
-            validator: (rules, value, callback) => {
-              if (!emailReg.test(value) && value) {
-                console.log(111)
-                callback(new Error('请输入正确格式的邮箱'))
-              }
-              callback()
-            }
-          }
         ]
       },
       //所需数据选项
@@ -89,13 +89,16 @@ export default {
     }
   },
   mounted() {
-
   },
   methods: {
     //显示
     open(mode = 'add') {
       this.mode = mode;
       this.visible = true;
+      this.$API.department.speciality.all.get().then(({ data }) => {
+        this.specialityOptions = data
+      }).catch(() => {
+      })
       return this
     },
     //表单提交方法

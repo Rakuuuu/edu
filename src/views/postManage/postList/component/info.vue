@@ -56,7 +56,9 @@ export default {
   async created() {
     this.postId = this.$route.query.postId
     try {
-      const { data: { postContent } } = await this.$API.post.post.detail.get()
+      const { data: { postContent } } = await this.$API.post.post.detail.get({
+        postId: this.postId
+      })
       this.postContent = postContent
     } catch (e) {
       /* empty */

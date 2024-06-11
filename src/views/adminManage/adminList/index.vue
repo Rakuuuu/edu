@@ -6,6 +6,12 @@
         <el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0"
                    @click="batch_del"></el-button>
       </div>
+      <div>
+        <sc-search-form
+          :listForm="searchForm"
+          @searchHandler="searchHandler"
+        />
+      </div>
     </el-header>
     <el-main class="nopadding">
       <scTable
@@ -18,7 +24,6 @@
         <el-table-column type="selection" width="50"></el-table-column>
         <el-table-column label="姓名" prop="adminName" width="180"></el-table-column>
         <el-table-column label="手机号" prop="adminPhone" width="150"></el-table-column>
-        <el-table-column label="邮箱" prop="adminEmail" width="250"></el-table-column>
         <el-table-column label="所属学院" prop="departmentName" width="180"></el-table-column>
         <el-table-column label="创建时间" prop="createdAt" width="150">
           <template v-slot="{ row }">
@@ -42,6 +47,11 @@
             <el-button type="primary" plain size="small" @click="table_edit(scope.row)">编辑</el-button>
             <!--            <el-button type="primary" plain size="small" @click="table_edit_page(scope.row)">页面编辑-->
             <!--            </el-button>-->
+            <el-popconfirm title="确定要重置密码吗？" @confirm="reset_password(scope.row)">
+              <template #reference>
+                <el-button plain type="warning" size="small">重置密码</el-button>
+              </template>
+            </el-popconfirm>
             <el-popconfirm title="确定删除吗？" @confirm="table_del(scope.row, scope.$index)">
               <template #reference>
                 <el-button plain type="danger" size="small">删除</el-button>
@@ -61,10 +71,12 @@
 
 <script>
 import saveDialog from './component/save.vue'
+import ScSearchForm from '@/components/scSearchForm/index.vue'
 
 export default {
   name: 'adminList',
   components: {
+    ScSearchForm,
     saveDialog
   },
   data() {
@@ -75,12 +87,27 @@ export default {
       list: {
         apiObj: this.$API.user.admin.list
       },
-      selection: []
+      selection: [],
+      searchForm: [
+        {
+          type: 'input',
+          keyName: 'adminName',
+          placeholder: '管理员姓名',
+        },
+        {
+          type: 'input',
+          keyName: 'adminPhone',
+          placeholder: '手机号',
+        },
+      ]
     }
   },
   mounted() {
   },
   methods: {
+    searchHandler (val) {
+      this.$refs.table.reload(val)
+    },
     //窗口新增
     add() {
       this.dialog.save = true
@@ -94,6 +121,20 @@ export default {
       this.$nextTick(() => {
         this.$refs.saveDialog.open('edit').setData(row)
       })
+    },
+    // 重置密码
+    async reset_password (row) {
+      try {
+        await this.$API.user.common.resetUserPassword.post({
+          adminId: row.adminId
+        })
+        this.$message({
+          type: 'success',
+          message: '密码重置成功'
+        })
+      } catch (err) {
+        //
+      }
     },
     //页面新增
     addPage() {

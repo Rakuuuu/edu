@@ -21,7 +21,11 @@ module.exports = defineConfig({
                 pathRewrite: {
                     '^/api': '/'
                 }
-            }
+            },
+            '/static': {
+                target: 'http://139.9.60.254',
+                ws: true
+            },
         }
     },
 

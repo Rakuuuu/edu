@@ -53,6 +53,13 @@ export default {
       get: async function (params) {
         return await http.get(this.url, params);
       }
+    },
+    condition: {
+      url: `${config.API_URL}/examManage/exportExamReport`,
+      name: "获取课程任务情况",
+      get: async function (params) {
+        return await http.get(this.url, params);
+      }
     }
   },
 }

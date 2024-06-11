@@ -30,6 +30,22 @@ export default {
       post: async function (params) {
         return await http.post(this.url, params);
       }
-    }
+    },
+    uploadStatic: {
+      url: `${config.API_URL}/file/uploadFile`,
+      name: "上传静态资源文件",
+      post: async function (params) {
+        return await http.post(this.url, params, {
+        });
+      }
+    },
+    download: {
+      url: `${config.API_URL}/fileManage/downloadUserFile`,
+      name: "下载用户文件",
+      get: async function (params) {
+        return await http.get(this.url, params, {
+        });
+      }
+    },
   },
 }

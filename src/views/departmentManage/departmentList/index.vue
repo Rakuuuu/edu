@@ -1,12 +1,19 @@
 <template>
   <el-container>
-<!--    <el-header>-->
+    <el-header>
 <!--      <div class="left-panel">-->
 <!--        <el-button type="primary" icon="el-icon-plus" @click="add"></el-button>-->
 <!--        <el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0"-->
 <!--                   @click="batch_del"></el-button>-->
 <!--      </div>-->
-<!--    </el-header>-->
+
+      <div>
+        <sc-search-form
+          :listForm="searchForm"
+          @searchHandler="searchHandler"
+        />
+      </div>
+    </el-header>
     <el-main class="nopadding">
       <scTable
         ref="table"
@@ -58,10 +65,12 @@
 
 <script>
 import saveDialog from './component/save.vue'
+import ScSearchForm from '@/components/scSearchForm/index.vue'
 
 export default {
   name: 'departmentList',
   components: {
+    ScSearchForm,
     saveDialog
   },
   data() {
@@ -72,12 +81,22 @@ export default {
       list: {
         apiObj: this.$API.department.department.list
       },
-      selection: []
+      selection: [],
+      searchForm: [
+        {
+          type: 'input',
+          keyName: 'departmentName',
+          placeholder: '学院名称',
+        },
+      ]
     }
   },
   mounted() {
   },
   methods: {
+    searchHandler (val) {
+      this.$refs.table.reload(val)
+    },
     //窗口新增
     add() {
       this.dialog.save = true

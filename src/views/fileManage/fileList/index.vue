@@ -1,12 +1,18 @@
 <template>
   <el-container>
-<!--    <el-header>-->
+    <el-header>
 <!--      <div class="left-panel">-->
 <!--        <el-button type="primary" icon="el-icon-plus" @click="add"></el-button>-->
 <!--        <el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0"-->
 <!--                   @click="batch_del"></el-button>-->
 <!--      </div>-->
-<!--    </el-header>-->
+      <div>
+        <sc-search-form
+          :listForm="searchForm"
+          @searchHandler="searchHandler"
+        />
+      </div>
+    </el-header>
     <el-main class="nopadding">
       <scTable
         ref="table"
@@ -36,7 +42,11 @@
             {{ row.edu_student?.studentName || `${row.edu_teacher?.teacherName}（教师）` || '' }}
           </template>
         </el-table-column>
-        <el-table-column label="上传时间" prop="createdAt" width="150"></el-table-column>
+        <el-table-column label="上传时间" prop="createdAt" width="150">
+          <template v-slot="{ row }">
+            {{ $TOOL.dateFormat(row.createdAt) }}
+          </template>
+        </el-table-column>
 <!--        <el-table-column label="修改时间" prop="updatedAt" width="150"></el-table-column>-->
         <!--        <el-table-column label="状态" prop="boolean" width="60">-->
         <!--          <template #default="scope">-->
@@ -45,9 +55,9 @@
         <!--          </template>-->
         <!--        </el-table-column>-->
 
-        <el-table-column label="操作" fixed="right" align="right" width="300">
+        <el-table-column label="操作" fixed="right" align="right" width="150">
           <template #default="scope">
-<!--            <el-button plain size="small" @click="table_show(scope.row)">查看</el-button>-->
+            <el-button plain size="small" @click="table_show(scope.row)">下载</el-button>
 <!--            <el-button type="primary" plain size="small" @click="table_edit(scope.row)">编辑</el-button>-->
             <!--            <el-button type="primary" plain size="small" @click="table_edit_page(scope.row)">页面编辑-->
             <!--            </el-button>-->
@@ -71,10 +81,12 @@
 <script>
 import saveDialog from './component/save.vue'
 import {formatBytes, getFileTypeFromMIME} from '@/utils/enum'
+import ScSearchForm from '@/components/scSearchForm/index.vue'
 
 export default {
   name: 'teacherList',
   components: {
+    ScSearchForm,
     saveDialog
   },
   data() {
@@ -85,7 +97,14 @@ export default {
       list: {
         apiObj: this.$API.file.file.list
       },
-      selection: []
+      selection: [],
+      searchForm: [
+        {
+          type: 'input',
+          keyName: 'fileName',
+          placeholder: '文件名称',
+        },
+      ]
     }
   },
   mounted() {
@@ -93,6 +112,9 @@ export default {
   methods: {
     getFileTypeFromMIME,
     formatBytes,
+    searchHandler (val) {
+      this.$refs.table.reload(val)
+    },
     //窗口新增
     add() {
       this.dialog.save = true
@@ -124,10 +146,7 @@ export default {
     },
     //查看
     table_show(row) {
-      this.dialog.save = true
-      this.$nextTick(() => {
-        this.$refs.saveDialog.open('show').setData(row)
-      })
+      window.open(`${this.$API.file.file.download.url}?fileId=${row.fileId}`)
     },
     //删除明细
     table_del({ fileId }) {
